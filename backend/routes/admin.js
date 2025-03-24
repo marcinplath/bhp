@@ -66,7 +66,6 @@ router.post(
   async (req, res) => {
     const { id } = req.params;
 
-    // 🔍 Sprawdzenie, czy ID jest liczbą całkowitą
     if (!/^\d+$/.test(id)) {
       return res
         .status(400)
@@ -74,7 +73,6 @@ router.post(
     }
 
     try {
-      // Pobranie zaproszenia z bazy
       const result = await pool.query(
         "SELECT * FROM invitations WHERE id = $1",
         [id]
@@ -87,7 +85,6 @@ router.post(
       const invitation = result.rows[0];
 
       if (invitation.status === "pending") {
-        // Wysyłanie standardowego zaproszenia
         const link = `http://localhost:5173/test/${invitation.link}`;
         await sendInvitationEmail(invitation.email, link);
         return res
@@ -96,7 +93,6 @@ router.post(
       }
 
       if (invitation.status === "completed") {
-        // Wysyłanie e-maila z kodem dostępu
         if (!invitation.access_code) {
           return res
             .status(400)
@@ -178,7 +174,6 @@ router.put(
   }
 );
 
-// Usuwanie zaproszenia
 router.delete(
   "/invitations/:id",
   authenticateToken,
@@ -203,8 +198,6 @@ router.delete(
     }
   }
 );
-
-/////////////////////////////////////////////////////////
 
 router.get("/questions", authenticateToken, checkAdmin, async (req, res) => {
   try {
@@ -231,11 +224,9 @@ router.post("/questions", authenticateToken, checkAdmin, async (req, res) => {
   }
 
   if (!["A", "B", "C"].includes(correct_option)) {
-    return res
-      .status(400)
-      .json({
-        error: "Poprawna odpowiedź musi być jedną z wartości: A, B lub C.",
-      });
+    return res.status(400).json({
+      error: "Poprawna odpowiedź musi być jedną z wartości: A, B lub C.",
+    });
   }
 
   try {
@@ -274,11 +265,9 @@ router.put(
     }
 
     if (!["A", "B", "C"].includes(correct_option)) {
-      return res
-        .status(400)
-        .json({
-          error: "Poprawna odpowiedź musi być jedną z wartości: A, B lub C.",
-        });
+      return res.status(400).json({
+        error: "Poprawna odpowiedź musi być jedną z wartości: A, B lub C.",
+      });
     }
 
     try {
@@ -293,19 +282,16 @@ router.put(
         return res.status(404).json({ error: "Pytanie nie istnieje." });
       }
 
-      res
-        .status(200)
-        .json({
-          message: "Pytanie zostało zaktualizowane.",
-          question: result.rows[0],
-        });
+      res.status(200).json({
+        message: "Pytanie zostało zaktualizowane.",
+        question: result.rows[0],
+      });
     } catch (error) {
       console.error("Błąd edytowania pytania:", error);
       res.status(500).json({ error: "Błąd serwera." });
     }
   }
 );
-
 router.delete(
   "/questions/:id",
   authenticateToken,

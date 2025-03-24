@@ -1,4 +1,3 @@
-// src/pages/VerifyCode.jsx
 import { useState } from "react";
 import { verifyAccessCode } from "../api";
 

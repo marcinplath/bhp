@@ -1,20 +1,20 @@
 const jwt = require("jsonwebtoken");
 
 const authenticateToken = (req, res, next) => {
-    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+  const token =
+    req.headers.authorization && req.headers.authorization.split(" ")[1];
 
-    if (!token) {
-        return res.status(401).json({ error: "Brak tokenu uwierzytelniającego" });
-    }
+  if (!token) {
+    return res.status(401).json({ error: "Brak tokenu uwierzytelniającego" });
+  }
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Zapisz zdekodowane dane użytkownika w obiekcie req
-        next(); // Przejdź do kolejnego middleware lub kontrolera
-    } catch (error) {
-        // Zwracamy 401, aby interceptor w froncie mógł zareagować i odświeżyć token
-        return res.status(401).json({ error: "Token nieprawidłowy lub wygasł" });
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Token nieprawidłowy lub wygasł" });
+  }
 };
 
 module.exports = authenticateToken;

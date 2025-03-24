@@ -7,29 +7,20 @@ import {
   editInvitation,
   createInvitation,
 } from "../api/invitations";
-
 import ConfirmModal from "../components/ConfirmModal";
 import EditInvitationModal from "../components/EditInvitationModal";
-
-// Przykład pobrania aktualnie zalogowanego użytkownika
-// (jeśli masz inny context lub Redux – dostosuj)
 import { useAuth } from "../context/AuthContext";
 
 const InvitationsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("Użytkownik z kontekstu:", user);
-
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   // Modale
   const [selectedInvitation, setSelectedInvitation] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
-  // Formularz tworzenia nowego zaproszenia – tylko e-mail
   const [newInviteEmail, setNewInviteEmail] = useState("");
 
   useEffect(() => {
@@ -45,24 +36,20 @@ const InvitationsPage = () => {
     loadInvitations();
   }, []);
 
-  // Obsługa tworzenia nowego zaproszenia
   const handleCreateInvitation = async () => {
     if (!newInviteEmail.trim()) {
       alert("Podaj adres e-mail!");
       return;
     }
 
-    // Zapraszający pobrany np. z kontekstu user
     const inviterName = user?.email || "Nieznany uzytkownik";
 
-    // Wysyłamy do backendu
     const created = await createInvitation({
       email: newInviteEmail,
       inviter: inviterName,
     });
 
     if (created) {
-      // Dodajemy nową pozycję do listy
       setInvitations((prev) => [...prev, created]);
       setNewInviteEmail("");
       alert("Zaproszenie zostało wysłane.");
@@ -71,7 +58,6 @@ const InvitationsPage = () => {
     }
   };
 
-  // Wyślij ponownie
   const handleResend = async (id) => {
     const success = await resendInvitation(id);
     success
@@ -79,7 +65,6 @@ const InvitationsPage = () => {
       : alert("Błąd ponownego wysyłania zaproszenia.");
   };
 
-  // Usuwanie
   const handleDelete = async () => {
     if (selectedInvitation) {
       const success = await deleteInvitation(selectedInvitation.id);
@@ -93,7 +78,6 @@ const InvitationsPage = () => {
     }
   };
 
-  // Edycja
   const handleEdit = (invite) => {
     setSelectedInvitation(invite);
     setShowEditModal(true);

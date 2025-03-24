@@ -7,9 +7,7 @@ const TestPage = () => {
   const [testData, setTestData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Przechowujemy odpowiedzi w obiekcie: { [questionId]: "A" | "B" | "C" }
   const [answers, setAnswers] = useState({});
-  // Wynik przesłania testu – komunikat oraz lista błędnych pytań (jeśli test niezaliczony)
   const [submissionResult, setSubmissionResult] = useState(null);
   const [incorrectQuestions, setIncorrectQuestions] = useState([]);
 
@@ -31,23 +29,18 @@ const TestPage = () => {
   };
 
   const handleSubmit = async () => {
-    // Resetujemy poprzedni wynik
     setSubmissionResult(null);
     setIncorrectQuestions([]);
 
-    // 1. Walidacja lokalna – czy na pewno każda odpowiedź została wybrana?
     const totalQuestions = testData.length;
-    const answeredCount = Object.keys(answers).length; // ile pytań ma w ogóle zaznaczone odpowiedzi
-
+    const answeredCount = Object.keys(answers).length;
     if (answeredCount < totalQuestions) {
-      // Wyświetlamy osobny komunikat o brakujących odpowiedziach
       setSubmissionResult({
         error: `Nie zaznaczono odpowiedzi na wszystkie pytania (odpowiedzi: ${answeredCount}/${totalQuestions}).`,
       });
       return;
     }
 
-    // 2. Wysyłamy żądanie do backendu
     const result = await submitTestAnswers(link, answers);
 
     if (result.error) {

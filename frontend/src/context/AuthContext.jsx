@@ -1,4 +1,3 @@
-// context/AuthContext.jsx
 import React, {
   createContext,
   useContext,
@@ -16,14 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Modal
   const [showSessionModal, setShowSessionModal] = useState(false);
-
-  // **Nowość**: przechowujemy timestamp wygaśnięcia (ms od epoki)
   const [logoutAt, setLogoutAt] = useState(null);
-
-  // Timery
   const warningTimerRef = useRef(null);
   const logoutTimerRef = useRef(null);
 
@@ -34,7 +27,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       delete api.defaults.headers.common.Authorization;
       clearSessionTimers();
-      setLogoutAt(null); // nie ma tokena → nie ma daty wylogowania
+      setLogoutAt(null);
     }
   }, [accessToken]);
 
@@ -93,10 +86,8 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
-      // Zapisujemy w stanie, kiedy faktycznie wylogujemy użytkownika
       setLogoutAt(expiryTimeMs);
 
-      // Minutę przed wygaśnięciem pokaż modal
       const warningTime = 60 * 1000;
       const showModalAt = timeLeft - warningTime;
 
@@ -146,7 +137,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         showSessionModal,
         stayLoggedIn,
-        logoutAt, // ← udostępniamy, żeby SessionModal mógł odczytać
+        logoutAt,
       }}
     >
       {isLoading ? (

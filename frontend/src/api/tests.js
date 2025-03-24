@@ -18,7 +18,6 @@ export const submitTestAnswers = async (link, answers) => {
         selectedOption,
       })
     );
-    // Dodaj /api przed /test
     const response = await api.post(`/api/test/${link}/submit`, {
       answers: formattedAnswers,
     });

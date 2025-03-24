@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import SessionModal from "./components/SessionModal"; // import modala
+import SessionModal from "./components/SessionModal";
 import TopBar from "./components/TopBar";
 import LoginPage from "./pages/LoginPage";
 import VerifyCode from "./pages/VerifyCode";

@@ -7,15 +7,14 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// ✅ Ustawienie funkcji refreshToken w interceptory (przekazanej z AuthContext)
 export const setupAxiosInterceptors = (refreshToken) => {
   api.interceptors.response.use(
     (response) => response,
     async (error) => {
       if (error.response && error.response.status === 401) {
         try {
-          await refreshToken(); // ✅ Odświeżamy token
-          return api.request(error.config); // ✅ Ponawiamy oryginalne zapytanie
+          await refreshToken();
+          return api.request(error.config);
         } catch (refreshError) {
           console.error("Błąd odświeżania tokena:", refreshError);
           return Promise.reject(error);
@@ -28,11 +27,6 @@ export const setupAxiosInterceptors = (refreshToken) => {
 
 export default api;
 
-// =========================
-// 🔹 AUTORYZACJA (LOGIN / LOGOUT)
-// =========================
-
-// ✅ Logowanie użytkownika
 export const loginUser = async (email, password) => {
   try {
     const response = await api.post("/auth/login", { email, password });
@@ -43,7 +37,6 @@ export const loginUser = async (email, password) => {
   }
 };
 
-// ✅ Wylogowanie użytkownika
 export const logoutUser = async () => {
   try {
     await api.post("/auth/logout");
@@ -51,10 +44,6 @@ export const logoutUser = async () => {
     console.error("Błąd podczas wylogowania:", error);
   }
 };
-
-// =========================
-// 🔹 ZAPROSZENIA (INVITATIONS)
-// =========================
 
 export const sendInvitation = async (email, inviter, token) => {
   try {
@@ -72,7 +61,6 @@ export const sendInvitation = async (email, inviter, token) => {
   }
 };
 
-// ✅ Pobieranie listy zaproszeń
 export const fetchInvitations = async (token) => {
   try {
     const response = await api.get("/admin/invitations", {
@@ -85,7 +73,6 @@ export const fetchInvitations = async (token) => {
   }
 };
 
-// ✅ Ponowne wysłanie zaproszenia
 export const resendInvitation = async (id, token) => {
   try {
     const response = await api.post(
@@ -102,7 +89,6 @@ export const resendInvitation = async (id, token) => {
   }
 };
 
-// ✅ Usunięcie zaproszenia
 export const deleteInvitation = async (id, token) => {
   try {
     const response = await api.delete(`/admin/invitations/${id}`, {
@@ -115,7 +101,6 @@ export const deleteInvitation = async (id, token) => {
   }
 };
 
-// ✅ Edycja zaproszenia
 export const editInvitation = async (id, updatedData, token) => {
   try {
     const response = await api.put(`/admin/invitations/${id}`, updatedData, {
@@ -127,10 +112,6 @@ export const editInvitation = async (id, updatedData, token) => {
     return { error: "Nie udało się edytować zaproszenia." };
   }
 };
-
-// =========================
-// 🔹 TESTY (QUIZ)
-// =========================
 
 export const fetchTest = async (link) => {
   try {
@@ -152,10 +133,6 @@ export const submitTest = async (link, answers) => {
   }
 };
 
-// =========================
-// 🔹 PYTANIA (QUESTIONS)
-// =========================
-
 export const fetchQuestions = async (token) => {
   try {
     const response = await api.get("/admin/questions", {
@@ -168,7 +145,6 @@ export const fetchQuestions = async (token) => {
   }
 };
 
-// ✅ Dodawanie nowego pytania
 export const addQuestion = async (question, token) => {
   try {
     const response = await api.post("/admin/questions", question, {
@@ -181,7 +157,6 @@ export const addQuestion = async (question, token) => {
   }
 };
 
-// ✅ Edytowanie pytania
 export const editQuestion = async (id, updatedData, token) => {
   try {
     const response = await api.put(`/admin/questions/${id}`, updatedData, {
@@ -194,7 +169,6 @@ export const editQuestion = async (id, updatedData, token) => {
   }
 };
 
-// ✅ Usuwanie pytania
 export const deleteQuestion = async (id, token) => {
   try {
     const response = await api.delete(`/admin/questions/${id}`, {
@@ -207,7 +181,6 @@ export const deleteQuestion = async (id, token) => {
   }
 };
 
-// ✅ Weryfikacja kodu dostępu
 export const verifyAccessCode = async (code) => {
   try {
     const response = await api.get(`/api/verify-access/${code}`);

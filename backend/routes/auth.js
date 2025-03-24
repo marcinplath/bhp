@@ -6,10 +6,9 @@ const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// ✅ Pobieranie danych zalogowanego użytkownika
 router.get("/user", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id; // Pobieramy ID użytkownika z tokena
+    const userId = req.user.id;
     const userResult = await pool.query(
       "SELECT id, email, role FROM users WHERE id = $1",
       [userId]
@@ -20,17 +19,15 @@ router.get("/user", authenticateToken, async (req, res) => {
     }
 
     const user = userResult.rows[0];
-    res.json(user); // Zwracamy dane użytkownika
+    res.json(user);
   } catch (error) {
     console.error("Błąd pobierania danych użytkownika:", error);
     res.status(500).json({ error: "Błąd serwera" });
   }
 });
 
-// Endpoint rejestracji
 router.post("/register", registerUser);
 
-// Endpoint logowania
 router.post("/login", loginUser);
 
 router.post("/refresh-token", async (req, res) => {
@@ -56,7 +53,6 @@ router.post("/refresh-token", async (req, res) => {
       async (err, decoded) => {
         if (err) return res.status(403).json({ error: "Refresh token wygasł" });
 
-        // Pobierz dane użytkownika
         const userResult = await pool.query(
           "SELECT id, email, role FROM users WHERE id = $1",
           [decoded.id]
@@ -87,7 +83,7 @@ router.post("/logout", async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
-    return res.status(204).send(); // Nic do usunięcia
+    return res.status(204).send();
   }
 
   try {

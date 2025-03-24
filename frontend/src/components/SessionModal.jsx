@@ -1,4 +1,3 @@
-// components/SessionModal.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,18 +9,14 @@ const SessionModal = () => {
     let intervalId;
 
     if (showSessionModal && logoutAt) {
-      // Obliczamy wstępny countdown
       const updateCountdown = () => {
         const now = Date.now();
         const timeLeftMs = logoutAt - now;
-        // Jeśli timeLeftMs < 0, to zaraz i tak nastąpi logout
         setCountdown(Math.max(0, Math.floor(timeLeftMs / 1000)));
       };
 
-      // Wywołaj raz, żeby nie mieć 1-sekundowego opóźnienia
       updateCountdown();
 
-      // Aktualizuj co sekundę
       intervalId = setInterval(updateCountdown, 1000);
     }
 

@@ -10,12 +10,12 @@ const PORT = process.env.PORT;
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173", // 🔹 Dostosuj do frontendu
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
 app.use(express.json());
-app.use(cookieParser()); // ✅ Dodajemy obsługę ciasteczek
+app.use(cookieParser());
 
 // Routes
 const apiRoutes = require("./routes/api");
